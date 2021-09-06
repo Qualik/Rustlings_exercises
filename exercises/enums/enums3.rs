@@ -5,21 +5,26 @@
 
 enum Message {
     // TODO: implement the message variant types based on their usage below
+    ChangeColor(u8, u8, u8),
+    Echo(String),
+    Move{ x: u8, y: u8 },
+    Quit
 }
-
+// Point Struct
 struct Point {
     x: u8,
     y: u8,
 }
 
+// State Struct
 struct State {
     color: (u8, u8, u8),
     position: Point,
     quit: bool,
 }
-
+// implentation of State Struct that attaches some methods
 impl State {
-    fn change_color(&mut self, color: (u8, u8, u8)) {
+    fn Change_color(&mut self, color: (u8, u8, u8)) {
         self.color = color;
     }
 
@@ -37,6 +42,12 @@ impl State {
 
     fn process(&mut self, message: Message) {
         // TODO: create a match expression to process the different message variants
+        match message {
+            Message::ChangeColor(r, g, b) => self.Change_color((r, g, b)),
+            Message::Echo(s) => self.echo(s),
+            Message::Move{ x, y } => self.move_position(Point{ x, y }),
+            Message::Quit => self.quit(),
+        } 
     }
 }
 
@@ -51,9 +62,9 @@ mod tests {
             position: Point { x: 0, y: 0 },
             color: (0, 0, 0),
         };
-        state.process(Message::ChangeColor((255, 0, 255)));
+        state.process(Message::ChangeColor(255, 0, 255));
         state.process(Message::Echo(String::from("hello world")));
-        state.process(Message::Move(Point { x: 10, y: 15 }));
+        state.process(Message::Move{ x: 10, y: 15 });
         state.process(Message::Quit);
 
         assert_eq!(state.color, (255, 0, 255));
